@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PAAgenda": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "CONTATO_API_URI": "https://localhost:44338"
+      }
+    }
+  }
+}
