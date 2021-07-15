@@ -33,20 +33,6 @@ namespace PAAgenda.View
         private async void BtnSalvar_Click(object sender, EventArgs e)
         {
             await SaveOrEdit();
-
-        }
-                
-        private void DisplayMsgBox(Exception ex)
-        {
-            string caption = "Erro ao executar operação:";
-            MessageBoxButtons buttons = MessageBoxButtons.OK;
-            DialogResult result;
-            
-            result = MessageBox.Show(ex.Message, caption, buttons);
-            if (result == DialogResult.Yes)
-            {
-                this.Close();
-            }
         }
 
         private async void BtnEditar_Click(object sender, EventArgs e)
@@ -56,17 +42,27 @@ namespace PAAgenda.View
 
         private async void BtnExcluir_Click(object sender, EventArgs e)
         {
-            try
+            if (!(String.IsNullOrWhiteSpace(TxtCodigo.Text)))
             {
-                ReadForm();
-                await _viewModel.Delete();
-                ClearForm();
-                _viewModel.Agenda = new Agenda { Id = 0 };
+                try
+                {
+                    ReadForm();
+                    await _viewModel.Delete();
+                    ClearForm();
+                    _viewModel.Agenda = new Agenda { Id = 0 };
+                }
+                catch (Exception ex)
+                {
+                    DisplayMessageBoxOK("Erroa ao executar operação", ex.Message);
+                }
             }
-            catch (Exception ex)
+            else 
             {
-                DisplayMsgBox(ex);
+                string caption = "Erro no preenchimento dos dados:";
+                string message = "Você deve selecionar um registro para exclusão";
+                DisplayMessageBoxOK(caption, message);
             }
+           
             
         }
         #region Métodos auxiliares de evento
@@ -96,13 +92,35 @@ namespace PAAgenda.View
             try
             {
                 ReadForm();
-                await _viewModel.Salvar();
-                ClearForm();
-                _viewModel.Agenda = new Agenda { Id = 0 };
+                if (!(String.IsNullOrWhiteSpace(TxtNome.Text)) && !(string.IsNullOrWhiteSpace(TxtTelefone.Text)))
+                {
+                    await _viewModel.Salvar();
+                    ClearForm();
+                    _viewModel.Agenda = new Agenda { Id = 0 };
+                }
+                else
+                {
+                    string caption = "Erro no preenchimento dos dados:";
+                    string message = "Você deve preencher os campos de Nome e Telefone";
+                    DisplayMessageBoxOK(caption, message);
+                }
+
             }
             catch (Exception ex)
             {
-                DisplayMsgBox(ex);
+                DisplayMessageBoxOK("Erroa ao executar operação",ex.Message);
+            }
+        }
+
+        private void DisplayMessageBoxOK(string caption, string message)
+        {
+            MessageBoxButtons buttons = MessageBoxButtons.OK;
+            DialogResult result;
+
+            result = MessageBox.Show(message, caption, buttons);
+            if (result == DialogResult.Yes)
+            {
+                this.Close();
             }
         }
         #endregion
