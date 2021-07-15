@@ -82,15 +82,16 @@ namespace PAAgenda.Persistence.Repositories
                 throw new ApiException("Ocorreu um erro ao acesar a API, verifique se o serviço está disponível ou a variável de ambiente configurada.");
             }
         }
-        public async Task Delete(int idAgenda)
+        public async Task<bool> Delete(int idAgenda)
         {
             try
             {
                 string urlBase = VariableConfigurationExtensions.GetContatoAPI_URI();
                 var agendaAPI = RestService.For<AgendaAPI>(urlBase);
                 var novaAgenda = await agendaAPI.Excluir(idAgenda);
+                return novaAgenda;
             }
-            catch 
+            catch
             {
                 throw new ApiException("Ocorreu um erro ao acesar a API, verifique se o serviço está disponível ou a variável de ambiente configurada.");
             }

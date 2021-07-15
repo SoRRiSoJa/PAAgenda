@@ -14,7 +14,7 @@ namespace PAAgenda.Domain.Services
         Task<Agenda> Editar([Body] Agenda agenda);
 
         [Delete("/agenda/{idAgenda}")]
-        Task<Agenda> Excluir(int idAgenda);
+        Task<bool> Excluir(int idAgenda);
 
         [Get("/agenda")]
         Task<IEnumerable<Agenda>> Listar();
