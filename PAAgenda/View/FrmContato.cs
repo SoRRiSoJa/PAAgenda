@@ -5,6 +5,7 @@ namespace PAAgenda.View
 {
     using PAAgenda.Domain.Model;
     using PAAgenda.ViewModel;
+    using System.Threading.Tasks;
 
     public partial class FrmContato : Form
     {
@@ -31,20 +32,10 @@ namespace PAAgenda.View
 
         private async void BtnSalvar_Click(object sender, EventArgs e)
         {
-            try
-            {
-                ReadForm();
-                await _viewModel.Salvar();
-                ClearForm();
-                _viewModel.Agenda = new Agenda { Id = 0 };
-            }
-            catch (Exception ex)
-            {
-                DisplayMsgBox(ex);
-            }
+            await SaveOrEdit();
 
         }
-
+                
         private void DisplayMsgBox(Exception ex)
         {
             string caption = "Erro ao executar operação:";
@@ -60,18 +51,7 @@ namespace PAAgenda.View
 
         private async void BtnEditar_Click(object sender, EventArgs e)
         {
-            try
-            {
-                ReadForm();
-                await _viewModel.Salvar();
-                ClearForm();
-                _viewModel.Agenda = new Agenda { Id = 0 };
-            }
-            catch (Exception ex)
-            {
-                DisplayMsgBox(ex);
-            }
-            
+            await SaveOrEdit();
         }
 
         private async void BtnExcluir_Click(object sender, EventArgs e)
@@ -92,6 +72,7 @@ namespace PAAgenda.View
         #region Métodos auxiliares de evento
         private void ClearForm() 
         {
+            TxtCodigo.Clear();
             TxtNome.Clear();
             TxtTelefone.Clear();
            
@@ -109,6 +90,20 @@ namespace PAAgenda.View
             _viewModel.Agenda.Id = id;
             _viewModel.Agenda.Nome = TxtNome.Text;
             _viewModel.Agenda.Numero = TxtTelefone.Text;
+        }
+        private async Task SaveOrEdit()
+        {
+            try
+            {
+                ReadForm();
+                await _viewModel.Salvar();
+                ClearForm();
+                _viewModel.Agenda = new Agenda { Id = 0 };
+            }
+            catch (Exception ex)
+            {
+                DisplayMsgBox(ex);
+            }
         }
         #endregion
     }
